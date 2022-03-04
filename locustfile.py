@@ -8,15 +8,16 @@ class WebTasks(TaskSet):
 
     @task
     def load(self):
-        credential = '%s:%s'.format('user', 'password')
+        credential = "{}:{}".format('user', 'password')
+        #print("credential={}".format(credential))
         base64string = base64.encodebytes(str.encode(credential)).replace(b'\n', b'')
-
+        #print("base64string={}".format(base64string))
         catalogue = self.client.get("/catalogue").json()
         category_item = choice(catalogue)
         item_id = category_item["id"]
 
         self.client.get("/")
-        self.client.get("/login", headers={"Authorization":"Basic %s" % base64string})
+        self.client.get("/login", headers={"Authorization":"Basic %s" % base64string.decode()})
         self.client.get("/category.html")
         self.client.get("/detail.html?id={}".format(item_id))
         self.client.delete("/cart")

@@ -39,7 +39,7 @@ do_exec() {
   sleep $INITIAL_DELAY
 
   # check if host is running
-  STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${TARGET_HOST}) 
+  STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://${TARGET_HOST}) 
   if [ $STATUS -ne 200 ]; then
       echo "${TARGET_HOST} is not accessible"
       exit 1
@@ -82,7 +82,7 @@ while getopts ":d:h:c:r:t:" o; do
         ;;
     c)
         CLIENTS=${OPTARG:-2}
-        echo $CLIENTS
+        #echo $CLIENTS
         ;;
     r)
         REQUESTS=${OPTARG:-10}
