@@ -1,6 +1,6 @@
 import base64
 
-from locust import HttpLocust, TaskSet, task, between
+from locust import HttpUser, TaskSet, task, between
 from random import randint, choice
 
 
@@ -26,7 +26,7 @@ class WebTasks(TaskSet):
         wait_time = between(5, 15)
 
 
-class Web(HttpLocust):
+class Web(HttpUser):
     task_set = WebTasks
     min_wait = 0
     max_wait = 0
