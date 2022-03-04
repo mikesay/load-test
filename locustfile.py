@@ -8,7 +8,8 @@ class WebTasks(TaskSet):
 
     @task
     def load(self):
-        base64string = base64.encodestring('%s:%s' % ('user', 'password')).replace('\n', '')
+        credential = '%s:%s'.format('user', 'password')
+        base64string = base64.encodebytes(str.encode(credential)).replace(b'\n', b'')
 
         catalogue = self.client.get("/catalogue").json()
         category_item = choice(catalogue)
@@ -27,6 +28,6 @@ class WebTasks(TaskSet):
 
 
 class Web(HttpUser):
-    task_set = WebTasks
+    tasks = [WebTasks]
     min_wait = 0
     max_wait = 0

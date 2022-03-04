@@ -46,7 +46,7 @@ do_exec() {
   fi
 
   echo "Will run $LOCUST_FILE against $TARGET_HOST. Spawning $CLIENTS clients to request the websit in $RUN_TIME."
-  locust --host=http://$TARGET_HOST -f $LOCUST_FILE --clients=$CLIENTS --hatch-rate=5 --run-time=$RUN_TIME --no-web --only-summary
+  locust --host=https://$TARGET_HOST -f $LOCUST_FILE --users=$CLIENTS --hatch-rate=5 --run-time=$RUN_TIME --headless --only-summary
   echo "done"
 }
 
@@ -57,7 +57,7 @@ Usage:
 
 Options:
   -d  Delay before starting
-  -h  Target host url, e.g. http://localhost/
+  -h  Target host url, e.g. localhost
   -c  Number of clients (default 2)
   -r  Number of requests (default 10)
 
@@ -82,7 +82,7 @@ while getopts ":d:h:c:r:t:" o; do
         ;;
     c)
         CLIENTS=${OPTARG:-2}
-        #echo $CLIENTS
+        echo $CLIENTS
         ;;
     r)
         REQUESTS=${OPTARG:-10}
@@ -90,6 +90,7 @@ while getopts ":d:h:c:r:t:" o; do
         ;;
     t)
         RUN_TIME=${OPTAGS:-300s}
+        echo $RUN_TIME
         ;;
     *)
         do_usage
