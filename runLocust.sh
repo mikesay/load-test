@@ -89,8 +89,8 @@ while getopts ":d:h:c:r:t:" o; do
         #echo $REQUESTS
         ;;
     t)
-        RUN_TIME=${OPTAGS:-300s}
-        echo $RUN_TIME
+        RUN_TIME=${OPTARG:-300s}
+        #echo $RUN_TIME
         ;;
     *)
         do_usage
