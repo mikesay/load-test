@@ -8,15 +8,14 @@ HOST="${1}"
 SCRIPT_NAME=`basename "$0"`
 INITIAL_DELAY=1
 TARGET_HOST="$HOST"
-CLIENTS=2
-REQUESTS=10
-
+CLIENTS=5
+SPAWN_RATE=1
 
 do_check() {
 
   # check hostname is not empty
   if [ "${TARGET_HOST}x" == "x" ]; then
-    echo "TARGET_HOST is not set; use '-h hostname:port'"
+    echo "TARGET_HOST is not set; use '-h http(s)://hostname:port'"
     exit 1
   fi
 
@@ -39,14 +38,14 @@ do_exec() {
   sleep $INITIAL_DELAY
 
   # check if host is running
-  STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://${TARGET_HOST}) 
+  STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${TARGET_HOST}) 
   if [ $STATUS -ne 200 ]; then
       echo "${TARGET_HOST} is not accessible"
       exit 1
   fi
 
-  echo "Will run $LOCUST_FILE against $TARGET_HOST. Spawning $CLIENTS clients to request the websit in $RUN_TIME."
-  locust --host=https://$TARGET_HOST -f $LOCUST_FILE --users=$CLIENTS --hatch-rate=5 --run-time=$RUN_TIME --headless --only-summary
+  echo "Will run $LOCUST_FILE against $TARGET_HOST. Spawning $CLIENTS clients to request the website in $RUN_TIME."
+  locust --host=$TARGET_HOST -f $LOCUST_FILE --users=$CLIENTS -r $SPAWN_RATE --run-time=$RUN_TIME --headless --only-summary
   echo "done"
 }
 
@@ -57,9 +56,10 @@ Usage:
 
 Options:
   -d  Delay before starting
-  -h  Target host url, e.g. localhost
-  -c  Number of clients (default 2)
-  -r  Number of requests (default 10)
+  -h  Target host url, e.g. http://localhost, or https://localhost, or http://localhost:8080
+  -c  Number of clients (default 5)
+  -r  Rate to spawn users (users per second, default 1)
+  -t  Stop after the specified amount of time, e.g. (300s, 20m, 3h, 1h30m, etc.)
 
 Description:
   Runs a Locust load simulation against specified host.
@@ -81,12 +81,12 @@ while getopts ":d:h:c:r:t:" o; do
         #echo $TARGET_HOST
         ;;
     c)
-        CLIENTS=${OPTARG:-2}
+        CLIENTS=${OPTARG:-5}
         #echo $CLIENTS
         ;;
     r)
-        REQUESTS=${OPTARG:-10}
-        #echo $REQUESTS
+        SPAWN_RATE=${OPTARG:-1}
+        #echo $SPAWN_RATE
         ;;
     t)
         RUN_TIME=${OPTARG:-300s}
